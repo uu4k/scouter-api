@@ -22,7 +22,7 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
         return this.reflectIdOnScouter(docRef.id, scouter)
       })
       .catch(error => {
-        console.log('Firestore Error: cannot add scouters.')
+        console.log('Firestore Error: cannot add scouters.', error)
         throw error
       })
   }
