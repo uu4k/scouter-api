@@ -67,12 +67,14 @@ app.use('/', router)
 
 // Create
 router.post('/', async (req: express.Request, res: express.Response) => {
+  const authedReq = req as AuthorizedRequest
   // controller呼び出し
   const controller = container.get(ScouterController)
 
   const viewModel = await controller.createScouter(
-    req.body.title,
-    req.body.description
+    authedReq.user.uid,
+    authedReq.body.title,
+    authedReq.body.description
   )
 
   res.json(viewModel.toJson())

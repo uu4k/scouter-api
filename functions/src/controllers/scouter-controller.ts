@@ -15,11 +15,12 @@ export class ScouterController {
   ) {}
 
   public createScouter(
+    uid: string,
     title: string,
     description: string
   ): Promise<ScouterViewModel> {
     return this.createUsecase
-      .handle(new CreateScouter.InputData(title, description))
+      .handle(new CreateScouter.InputData(uid, title, description))
       .then(outputData => {
         return this.scouterPresenter.completeCreate(outputData)
       })

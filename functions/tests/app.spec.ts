@@ -49,7 +49,7 @@ describe('Test the root path', () => {
 describe('Test Create Scouter', () => {
   test('It shoud return success', async done => {
     const controller = container.get(ScouterController)
-    await controller.createScouter('aaa', 'bbb').then(vm => {
+    await controller.createScouter('alice', 'aaa', 'bbb').then(vm => {
       expect(vm.toJson()).toEqual({})
     })
     const db = adminApp()

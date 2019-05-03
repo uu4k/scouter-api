@@ -11,10 +11,10 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
   ) {}
 
   public saveScouter(scouter: Scouter): Promise<Scouter> {
-    // TODO uid追加
     return this.db
       .collection('scouters')
       .add({
+        author: scouter.author,
         title: scouter.title,
         description: scouter.description
       })
@@ -28,6 +28,11 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
   }
 
   private reflectIdOnScouter(id: string, baseScouter: Scouter): Scouter {
-    return new Scouter(id, baseScouter.title, baseScouter.description)
+    return new Scouter(
+      id,
+      baseScouter.author,
+      baseScouter.title,
+      baseScouter.description
+    )
   }
 }
