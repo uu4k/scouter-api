@@ -3,7 +3,9 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
+    "test": "jest",
     "serve": "npm run build && firebase serve --only functions",
+    "serve:firestore": "firebase serve --only firestore",
     "serve:debug": "npm run build && firebase serve --only functions --debug",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
@@ -35,20 +37,15 @@
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.2",
     "tslint": "^5.12.0",
-    "typescript": "^3.2.2"
+    "typescript": "^3.4.5"
   },
   "private": true,
   "jest": {
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
     "testMatch": [
-      "**/tests/*.+(ts|tsx|js)"
+      "**/tests/**/*.+(ts|tsx|js)"
     ]
   }
 }
