@@ -63,10 +63,10 @@ app.use(authenticate)
 
 app.use('/', router)
 
-// TODO 認証確認
-
 // Create
 router.post('/', async (req: express.Request, res: express.Response) => {
+  // TODO json validate
+
   const authedReq = req as AuthorizedRequest
   // controller呼び出し
   const controller = container.get(ScouterController)
@@ -74,7 +74,9 @@ router.post('/', async (req: express.Request, res: express.Response) => {
   const viewModel = await controller.createScouter(
     authedReq.user.uid,
     authedReq.body.title,
-    authedReq.body.description
+    authedReq.body.description,
+    authedReq.body.scoringRules,
+    authedReq.body.messagingRules
   )
 
   res.json(viewModel.toJson())
