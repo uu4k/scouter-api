@@ -7,8 +7,8 @@ export default class Scouter {
     readonly author: string,
     readonly title: string,
     readonly description: string,
-    private scoringRules: ScoringRule[],
-    private messagingRules: MessagingRule[]
+    readonly scoringRules: ScoringRule[],
+    readonly messagingRules: MessagingRule[]
   ) {
     // TODO validation
   }

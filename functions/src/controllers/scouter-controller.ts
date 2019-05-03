@@ -14,6 +14,7 @@ import {
 } from '../valueobjects/scoring/valueobjects'
 import MessagingRule from '../entities/messaging-rule'
 import { Range } from '../valueobjects/messaging/valueobjects'
+import Scouter from '../entities/scouter'
 
 @injectable()
 export class ScouterController {
@@ -57,8 +58,17 @@ export class ScouterController {
       )
     }
 
+    const scouter = new Scouter(
+      null,
+      uid,
+      title,
+      description,
+      scoringRules,
+      messagingRules
+    )
+
     return this.createUsecase
-      .handle(new CreateScouter.InputData(uid, title, description))
+      .handle(new CreateScouter.InputData(scouter))
       .then(outputData => {
         return this.scouterPresenter.completeCreate(outputData)
       })

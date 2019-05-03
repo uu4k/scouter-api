@@ -2,11 +2,7 @@ import { injectable, inject } from 'inversify'
 import Scouter from '../../entities/scouter'
 
 export class InputData {
-  constructor(
-    readonly uid: string,
-    readonly title: string,
-    readonly description: string
-  ) {}
+  constructor(readonly scouter: Scouter) {}
 }
 
 export class OutputData {
@@ -34,9 +30,7 @@ export class Usecase implements IUsecase {
 
   public handle(inputData: InputData) {
     return this.scouterRepository
-      .saveScouter(
-        new Scouter(null, inputData.uid, inputData.title, inputData.description)
-      )
+      .saveScouter(inputData.scouter)
       .then((scouter: Scouter) => {
         return new OutputData(scouter.title, scouter.description)
       })

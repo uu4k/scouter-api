@@ -11,6 +11,7 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
   ) {}
 
   public saveScouter(scouter: Scouter): Promise<Scouter> {
+    // TODO transaction化
     return this.db
       .collection('scouters')
       .add({
@@ -19,6 +20,31 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
         description: scouter.description
       })
       .then((docRef: admin.firestore.DocumentReference) => {
+        // scoringRules登録
+        for (const scoringRule of scouter.scoringRules) {
+          this.db
+            .collection('scouters')
+            .doc(docRef.id)
+            .collection('scoringRules')
+            .add({
+              target: scoringRule.target.value,
+              operator: scoringRule.condition.operator.value,
+              operand: scoringRule.condition.operand
+            })
+        }
+        // messagingRules登録
+        for (const messagingRule of scouter.messagingRules) {
+          this.db
+            .collection('scouters')
+            .doc(docRef.id)
+            .collection('messagingRules')
+            .add({
+              message: messagingRule.message,
+              default: messagingRule.isDefault,
+              min: messagingRule.range ? messagingRule.range.min : null,
+              max: messagingRule.range ? messagingRule.range.max : null
+            })
+        }
         return this.reflectIdOnScouter(docRef.id, scouter)
       })
       .catch(error => {
@@ -32,7 +58,9 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
       id,
       baseScouter.author,
       baseScouter.title,
-      baseScouter.description
+      baseScouter.description,
+      baseScouter.scoringRules,
+      baseScouter.messagingRules
     )
   }
 }

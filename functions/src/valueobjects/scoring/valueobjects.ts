@@ -1,6 +1,8 @@
 // TODO front側で再利用できるようにする
 export class Condition {
-  constructor(readonly operator: Operator, readonly operand: string | number) {}
+  constructor(readonly operator: Operator, readonly operand: string | number) {
+    // TODO operatorに応じてoperandのvalidationを入れる
+  }
 }
 
 export type Target = {
