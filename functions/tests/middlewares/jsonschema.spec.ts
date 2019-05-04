@@ -12,6 +12,8 @@ describe('json schema validate test', () => {
         scoringRules: [
           {
             target: 'tweet',
+            score: 100,
+            oneTimeOnly: true,
             condition: {
               operator: 'contain',
               operand: 'ccc'

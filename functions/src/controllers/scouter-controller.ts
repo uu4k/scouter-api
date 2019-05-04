@@ -38,6 +38,8 @@ export class ScouterController {
       scoringRules.push(
         new ScoringRule(
           TargetFactory.create(b.target) as Target,
+          b.score,
+          b.oneTimeOnly,
           new Condition(
             OperatorFactory.create(b.condition.operator) as Operator,
             b.condition.operand
@@ -77,6 +79,8 @@ export class ScouterController {
 
 export type ScoringRuleBody = {
   target: string
+  score: number
+  oneTimeOnly: boolean
   condition: { operator: string; operand: string }
 }
 

@@ -39,11 +39,17 @@ const ScouterScheema = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['target', 'condition'],
+        required: ['target', 'score', 'oneTimeOnly', 'condition'],
         properties: {
           target: {
             type: 'string',
             enum: targets.map(t => t.value)
+          },
+          score: {
+            type: 'number'
+          },
+          oneTimeOnly: {
+            type: 'boolean'
           },
           condition: {
             type: 'object',
