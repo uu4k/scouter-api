@@ -4,51 +4,11 @@ import Router from 'express-promise-router'
 import container from './config/ioc-config'
 import { ScouterController } from './controllers/scouter-controller'
 import * as bodyParser from 'body-parser'
-import * as admin from 'firebase-admin'
-import * as functions from 'firebase-functions'
+import { AuthorizedRequest, authenticate } from './middlewares/authenticate'
+import { validate } from './middlewares/jsonschema'
 
 const app = express()
 const router = Router()
-
-interface AuthorizedRequest extends functions.https.Request {
-  user: admin.auth.DecodedIdToken
-}
-
-// https://github.com/firebase/functions-samples/blob/master/authenticated-json-api/functions/index.js
-//
-// Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
-// The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
-// `Authorization: Bearer <Firebase ID Token>`.
-// when decoded successfully, the ID Token content will be added as `req.user`.
-const authenticate = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  // GETのみ認証なしでもOK
-  if (req.method === 'GET') {
-    next()
-    return
-  }
-
-  if (
-    !req.headers.authorization ||
-    !req.headers.authorization.startsWith('Bearer ')
-  ) {
-    res.status(403).send('Unauthorized')
-    return
-  }
-  const idToken = req.headers.authorization.split('Bearer ')[1]
-  try {
-    const decodedIdToken = await admin.auth().verifyIdToken(idToken)
-    ;(req as AuthorizedRequest).user = decodedIdToken
-    next()
-    return
-  } catch (e) {
-    res.status(403).send('Unauthorized')
-    return
-  }
-}
 
 app.use(
   bodyParser.urlencoded({
@@ -59,28 +19,31 @@ app.use(bodyParser.json())
 // TODO CORSちゃんと設定する
 app.use(cors({ origin: true }))
 
-app.use(authenticate)
-
 app.use('/', router)
 
 // Create
-router.post('/', async (req: express.Request, res: express.Response) => {
-  // TODO json validate
+router.post(
+  '/',
+  authenticate,
+  validate,
+  async (req: express.Request, res: express.Response) => {
+    // TODO json validate
 
-  const authedReq = req as AuthorizedRequest
-  // controller呼び出し
-  const controller = container.get(ScouterController)
+    const authedReq = req as AuthorizedRequest
+    // controller呼び出し
+    const controller = container.get(ScouterController)
 
-  const viewModel = await controller.createScouter(
-    authedReq.user.uid,
-    authedReq.body.title,
-    authedReq.body.description,
-    authedReq.body.scoringRules,
-    authedReq.body.messagingRules
-  )
+    const viewModel = await controller.createScouter(
+      authedReq.user.uid,
+      authedReq.body.title,
+      authedReq.body.description,
+      authedReq.body.scoringRules,
+      authedReq.body.messagingRules
+    )
 
-  res.json(viewModel.toJson())
-})
+    res.json(viewModel.toJson())
+  }
+)
 
 // Read
 
