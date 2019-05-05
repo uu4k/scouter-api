@@ -6,5 +6,9 @@ export default class ScoringRule {
     readonly score: number,
     readonly oneTimeOnly: boolean,
     readonly condition: Condition
-  ) {}
+  ) {
+    if (!target.enableCondition(this.condition)) {
+      throw new Error('ScoringRule Constructor: Unable Condition.')
+    }
+  }
 }
