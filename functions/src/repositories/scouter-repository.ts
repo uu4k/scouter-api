@@ -31,6 +31,10 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
               operator: scoringRule.condition.operator.value,
               operand: scoringRule.condition.operand
             })
+            .catch(error => {
+              console.log('Firestore Error: cannot add scoringRules.', error)
+              throw error
+            })
         }
         // messagingRules登録
         for (const messagingRule of scouter.messagingRules) {
@@ -43,6 +47,10 @@ export class ScouterRepository implements CreateScouter.IScouterRepository {
               default: messagingRule.isDefault,
               min: messagingRule.range ? messagingRule.range.min : null,
               max: messagingRule.range ? messagingRule.range.max : null
+            })
+            .catch(error => {
+              console.log('Firestore Error: cannot add messagingRules.', error)
+              throw error
             })
         }
         return this.reflectIdOnScouter(docRef.id, scouter)
