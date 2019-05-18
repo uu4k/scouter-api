@@ -34,16 +34,63 @@ afterAll(async () => {
 describe('Test Create Scouter', () => {
   test('It shoud return success', async done => {
     const controller: ScouterController = container.get(ScouterController)
-    await controller.createScouter('alice', 'aaa', 'bbb', [], []).then(vm => {
-      expect(vm.toJson()).toEqual({})
-    })
-    const db = adminApp()
-    await db
-      .collection('scouters')
-      .get()
-      .then(querySnapshot => {
-        expect(querySnapshot.docs[0].data().title).toBe('aaa')
+    await controller
+      .createScouter('alice', 'aaa', 'bbb', [], [])
+      .then(async vm => {
+        const response = vm.toJson()
+        expect(response['author']).toEqual('alice')
+        expect(response['title']).toEqual('aaa')
+        expect(response['description']).toEqual('bbb')
+        expect(response['scoringRules']).toEqual([])
+        expect(response['messagingRules']).toEqual([])
+
+        const db = adminApp()
+        await db
+          .collection('scouters')
+          .doc(response['id'])
+          .get()
+          .then(docSn => {
+            expect(docSn.exists).toBe(true)
+          })
+          .catch(err => {
+            throw err
+          })
+        done()
       })
-    done()
   })
 })
+
+// describe('Test Get Scouter', () => {
+//   test('It shoud return success', async done => {
+//     const controller: ScouterController = container.get(ScouterController)
+//     let scouterId
+//     await controller
+//       .createScouter('alice', 'aaa', 'bbb', [], [])
+//       .then(async vm => {
+//         const response = vm.toJson()
+//         scouterId = response['id']
+//       })
+//       .catch(err => {
+//         throw err
+//       })
+
+//     await controller.getScouter(scouterId).then(async vm => {
+//       const response = vm.toJson()
+//       expect(response['author']).toEqual('alice')
+//       expect(response['title']).toEqual('aaa')
+//       expect(response['description']).toEqual('bbb')
+//       expect(response['scoringRules']).toEqual([])
+//       expect(response['messagingRules']).toEqual([])
+
+//       const db = adminApp()
+//       await db
+//         .collection('scouters')
+//         .doc(response['id'])
+//         .get()
+//         .then(docSn => {
+//           expect(docSn.exists).toBe(true)
+//         })
+//       done()
+//     })
+//   })
+// })

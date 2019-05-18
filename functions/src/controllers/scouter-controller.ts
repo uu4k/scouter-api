@@ -1,4 +1,4 @@
-import CreateScouter from '../usecases/scouter/module'
+import CreateScouter from '../usecases/scouter/create/module'
 import { injectable, inject } from 'inversify'
 import {
   ScouterPresenter,
@@ -15,12 +15,15 @@ import {
 import MessagingRule from '../entities/messaging-rule'
 import { Range } from '../valueobjects/messaging/valueobjects'
 import Scouter from '../entities/scouter'
+import GetScouter from '../usecases/scouter/get/module'
 
 @injectable()
 export class ScouterController {
   constructor(
     @inject('CreateScouter.IUsecase')
     private createUsecase: CreateScouter.IUsecase,
+    @inject('GetScouter.IUsecase')
+    private getUsecase: GetScouter.IUsecase,
     @inject(ScouterPresenter)
     private scouterPresenter: ScouterPresenter
   ) {}
@@ -73,6 +76,14 @@ export class ScouterController {
       .handle(new CreateScouter.InputData(scouter))
       .then(outputData => {
         return this.scouterPresenter.completeCreate(outputData)
+      })
+  }
+
+  public getScouter(id: string): Promise<ScouterViewModel> {
+    return this.getUsecase
+      .handle(new GetScouter.InputData(id))
+      .then(outputData => {
+        return this.scouterPresenter.completeGet(outputData)
       })
   }
 }

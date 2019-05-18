@@ -4,10 +4,11 @@ import 'reflect-metadata'
 import { Container } from 'inversify'
 import * as admin from 'firebase-admin'
 
-import CreateScouter from '../usecases/scouter/module'
+import CreateScouter from '../usecases/scouter/create/module'
 import { ScouterRepository } from '../repositories/scouter-repository'
 import { ScouterPresenter } from '../presenters/scouter/presenter'
 import { ScouterController } from '../controllers/scouter-controller'
+import GetScouter from '../usecases/scouter/get/module'
 
 const container = new Container()
 
@@ -25,7 +26,17 @@ container
   .whenTargetIsDefault()
 
 container
+  .bind<GetScouter.IUsecase>('GetScouter.IUsecase')
+  .to(GetScouter.Usecase)
+  .whenTargetIsDefault()
+
+container
   .bind<CreateScouter.IScouterRepository>('CreateScouter.IScouterRepository')
+  .to(ScouterRepository)
+  .whenTargetIsDefault()
+
+container
+  .bind<GetScouter.IScouterRepository>('GetScouter.IScouterRepository')
   .to(ScouterRepository)
   .whenTargetIsDefault()
 

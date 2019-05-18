@@ -44,6 +44,18 @@ router.post(
 )
 
 // Read
+router.get(
+  '/:id',
+  authenticate,
+  validate,
+  async (req: express.Request, res: express.Response) => {
+    const scouterId = req.params.id
+    // controller呼び出し
+    const controller = container.get(ScouterController)
+
+    res.json(controller.getScouter(scouterId))
+  }
+)
 
 // Update
 

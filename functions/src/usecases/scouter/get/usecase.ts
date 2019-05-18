@@ -1,16 +1,16 @@
 import { injectable, inject } from 'inversify'
-import Scouter from '../../entities/scouter'
+import Scouter from '../../../entities/scouter'
 
 export class InputData {
-  constructor(readonly scouter: Scouter) {}
+  constructor(readonly id: string) {}
 }
 
 export class OutputData {
-  constructor(readonly title: string, readonly description: string) {}
+  constructor(readonly scouter: Scouter) {}
 }
 
 export type IScouterRepository = {
-  saveScouter(scouter: Scouter): Promise<Scouter>
+  getScouter(id: string): Promise<Scouter>
 }
 
 // export type IPresenter = {
@@ -24,15 +24,15 @@ export type IUsecase = {
 @injectable()
 export class Usecase implements IUsecase {
   constructor(
-    @inject('CreateScouter.IScouterRepository')
+    @inject('GetScouter.IScouterRepository')
     private scouterRepository: IScouterRepository
   ) {}
 
   public handle(inputData: InputData) {
     return this.scouterRepository
-      .saveScouter(inputData.scouter)
+      .getScouter(inputData.id)
       .then((scouter: Scouter) => {
-        return new OutputData(scouter.title, scouter.description)
+        return new OutputData(scouter)
       })
   }
 }
