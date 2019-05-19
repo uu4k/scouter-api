@@ -36,6 +36,10 @@ export class ScouterViewModel implements ViewModel {
     for (const rule of scouter.scoringRules) {
       this.scoringRules.push(new ScoringRuleViewModel(rule))
     }
+
+    for (const rule of scouter.messagingRules) {
+      this.messagingRules.push(new MessagingRuleViewModel(rule))
+    }
   }
 
   public toJson() {
