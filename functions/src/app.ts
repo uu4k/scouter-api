@@ -52,7 +52,9 @@ router.get(
     // controller呼び出し
     const controller = container.get(ScouterController)
 
-    res.json(controller.getScouter(scouterId))
+    const viewModel = await controller.getScouter(scouterId)
+
+    res.json(viewModel.toJson())
   }
 )
 

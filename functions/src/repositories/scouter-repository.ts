@@ -11,7 +11,8 @@ import ScoringRule from '../entities/scoring-rule'
 import MessagingRule from '../entities/messaging-rule'
 import {
   Condition,
-  OperatorFactory
+  OperatorFactory,
+  TargetFactory
 } from '../valueobjects/scoring/valueobjects'
 import { Range } from '../valueobjects/messaging/valueobjects'
 
@@ -151,14 +152,21 @@ export class ScouterRepository
   private doc2ScoringRule(doc: QueryDocumentSnapshot): ScoringRule {
     const data = doc.data()
     const operator = OperatorFactory.create(data.operator)
-
     if (!operator) {
       throw new Error(
         'Firestore Error: scoring rule condition is broken: ' + doc.id
       )
     }
+
+    const target = TargetFactory.create(data.target)
+    if (!target) {
+      throw new Error(
+        'Firestore Error: scoring rule target is broken: ' + doc.id
+      )
+    }
+
     return new ScoringRule(
-      data.target,
+      target,
       data.score,
       data.oneTimeOnly,
       new Condition(operator, data.operand)

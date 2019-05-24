@@ -55,8 +55,17 @@ describe('Test Create Scouter', () => {
           .catch(err => {
             throw err
           })
-        done()
+
+        await controller.getScouter(response['id']).then(vm => {
+          const getResponse = vm.toJson()
+          expect(getResponse['author']).toEqual('alice')
+          expect(getResponse['title']).toEqual('aaa')
+          expect(getResponse['description']).toEqual('bbb')
+          expect(getResponse['scoringRules']).toEqual([])
+          expect(getResponse['messagingRules']).toEqual([])
+        })
       })
+    done()
   })
 })
 
