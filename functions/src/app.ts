@@ -47,7 +47,6 @@ router.post(
 router.get(
   '/:id',
   authenticate,
-  validate,
   async (req: express.Request, res: express.Response) => {
     const scouterId = req.params.id
     // controller呼び出し
